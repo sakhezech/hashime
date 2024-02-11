@@ -6,11 +6,11 @@ license = { file = 'LICENSE' }
 dependencies = []
 dynamic = ['version']
 
-# [project.urls]
-# Homepage = 'https://github.com/sakhezech/hashime'
+[project.urls]
+Homepage = 'https://github.com/sakhezech/hashime'
 
-# [project.scripts]
-# hashime = 'hashime.__main__:cli'
+[project.scripts]
+hashime = 'hashime.__main__:cli'
 
 [tool.ruff]
 line-length = 79

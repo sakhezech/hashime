@@ -7,9 +7,10 @@ from typing import Any, Sequence
 
 from hashime.__version__ import __version__
 from hashime.drunken_bishop import drunken_bishop
+from hashime.fish_tank import fish_tank
 from hashime.util import frame
 
-_algorithms = [drunken_bishop]
+_algorithms = [drunken_bishop, fish_tank]
 
 
 def cli(argv: Sequence[str] | None = None):
@@ -53,6 +54,7 @@ def cli(argv: Sequence[str] | None = None):
     )
 
     parser.add_argument(
+        '-hf',
         '--hash-function',
         choices=hashlib.algorithms_available,
         default='sha256',

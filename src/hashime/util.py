@@ -3,8 +3,12 @@ def clamp(val: int, min_: int, max_: int) -> int:
 
 
 def bit_set_in_pos(num: int, pos: int) -> int:
-    pow = 2**pos
-    return (num & pow) // pow
+    return (num >> pos) & 1
+
+
+def bits_set_in_range(num: int, start: int, end: int) -> int:
+    mask = (2 ** (end - start)) - 1
+    return (num >> start) & mask
 
 
 def frame(art: str) -> str:

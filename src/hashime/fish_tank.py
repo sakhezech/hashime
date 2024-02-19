@@ -19,8 +19,8 @@ def fish_tank(
         fish_type = bit_set_in_pos(byte, 0)
         x = bits_set_in_range(byte, 1, 5)
         y = bits_set_in_range(byte, 5, 8)
-        x = int((x / 16) * width)
-        y = int((y / 8) * height)
+        x = int((x / 15) * width)
+        y = int((y / 7) * height)
         fish = fish_list[fish_type]
         matrix.overlay(fish, x, y)
 

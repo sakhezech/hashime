@@ -3,6 +3,7 @@ import base64
 import hashlib
 import sys
 from io import BufferedReader, TextIOWrapper
+from pathlib import Path
 from typing import Any, Sequence
 
 from hashime.__version__ import __version__
@@ -123,7 +124,8 @@ def cli(argv: Sequence[str] | None = None):
 
     art = algorithm(digest, **kwargs)
     if should_be_framed:
-        art = frame(art)
+        file_name = Path(file.name).name
+        art = frame(art, top_text=file_name, bottom_text=hash_function.upper())
 
     out.write(art)
     out.write('\n')

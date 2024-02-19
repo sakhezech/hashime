@@ -36,17 +36,16 @@ def frame(
     # unpacking the values from tuples
     frame_t, frame_r, frame_b, frame_l = lines
     corner_tl, corner_tr, corner_br, corner_bl = corners
-    bracket_l, bracket_r = brackets
 
     if top_text is None:
         top_text = ''
     else:
-        top_text = f'{bracket_l}{top_text}{bracket_r}'
+        top_text = top_text.join(brackets)
 
     if bottom_text is None:
         bottom_text = ''
     else:
-        bottom_text = f'{bracket_l}{bottom_text}{bracket_r}'
+        bottom_text = bottom_text.join(brackets)
 
     top_line = top_text.center(width, frame_t).join((corner_tl, corner_tr))
     bot_line = bottom_text.center(width, frame_b).join((corner_bl, corner_br))

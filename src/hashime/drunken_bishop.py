@@ -8,6 +8,18 @@ def drunken_bishop(
     height: int = 9,
     chars: str = ' .o+=*BOX@%&#/^SE',
 ) -> str:
+    """
+    Drunken Bishop algorithm used in ssh-keygen.
+
+    Args:
+        digest: Digest to turn into randomart.
+        width: Randomart width.
+        height: Randomart height.
+        chars: Character set used to fill in the matrix.
+
+    Returns:
+        Randomart.
+    """
     x = start_x = width // 2
     y = start_y = height // 2
     matrix = Matrix(width, height, fill=0)

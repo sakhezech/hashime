@@ -8,10 +8,9 @@ from typing import Sequence
 
 from hashime.__version__ import __version__
 from hashime.drunken_bishop import drunken_bishop
-from hashime.fish_tank import fish_tank
 from hashime.util import frame
 
-_algorithms = [drunken_bishop, fish_tank]
+_algorithms = [drunken_bishop]
 
 
 def cli(argv: Sequence[str] | None = None):

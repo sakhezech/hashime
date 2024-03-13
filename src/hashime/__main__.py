@@ -4,7 +4,7 @@ import hashlib
 import sys
 from io import BufferedReader, TextIOWrapper
 from pathlib import Path
-from typing import Any, Sequence
+from typing import Sequence
 
 from hashime.__version__ import __version__
 from hashime.drunken_bishop import drunken_bishop
@@ -66,21 +66,51 @@ def cli(argv: Sequence[str] | None = None):
     parser.add_argument(
         '--width',
         type=int,
-        default=17,
-        help='visualization width (defaults to 17)',
+        help='visualization width',
     )
 
     parser.add_argument(
         '--height',
         type=int,
-        default=9,
-        help='visualization height (defaults to 9)',
+        help='visualization height',
     )
 
     parser.add_argument(
         '--no-frame',
         action='store_true',
         help='output visualization without a frame',
+    )
+
+    parser.add_argument(
+        '--frame-top-text',
+        metavar='TOP_TEXT',
+        help='text on the top frame line',
+    )
+
+    parser.add_argument(
+        '--frame-bottom-text',
+        metavar='BOTTOM_TEXT',
+        help='text on the bottom frame line',
+    )
+
+    parser.add_argument(
+        '--frame-lines',
+        metavar='LINES',
+        help='comma-separated frame side symbols '
+        'in a clockwise order from the top',
+    )
+
+    parser.add_argument(
+        '--frame-corners',
+        metavar='CORNERS',
+        help='comma-separated frame corner symbols '
+        'in a clockwise order from the top-left',
+    )
+
+    parser.add_argument(
+        '--frame-brackets',
+        metavar='BRACKETS',
+        help='comma-separated symbols surrounding frame text',
     )
 
     parser.add_argument(
@@ -115,17 +145,52 @@ def cli(argv: Sequence[str] | None = None):
     out: TextIOWrapper = args.output
     file: BufferedReader = args.file
 
-    kwargs: dict[str, Any] = {
-        'width': args.width,
-        'height': args.height,
-    }
-
     digest = hashlib.file_digest(file, hash_function).digest()
 
-    art = algorithm(digest, **kwargs)
+    algo_kwargs = {}
+    if args.width is not None:
+        algo_kwargs['width'] = args.width
+    if args.height is not None:
+        algo_kwargs['height'] = args.height
+    art = algorithm(digest, **algo_kwargs)
     if should_be_framed:
-        file_name = Path(file.name).name
-        art = frame(art, top_text=file_name, bottom_text=hash_function.upper())
+        frame_kwargs = {}
+        if args.frame_lines is not None:
+            lines = args.frame_lines.split(',')
+            frame_kwargs['lines'] = lines
+            if len(lines) != 4:
+                raise ValueError(
+                    f'Number of line chars is not 4: {len(lines)}'
+                )
+        if args.frame_corners is not None:
+            corners = args.frame_corners.split(',')
+            frame_kwargs['corners'] = corners
+            if len(corners) != 4:
+                raise ValueError(
+                    f'Number of corner chars is not 4: {len(corners)}'
+                )
+        if args.frame_brackets is not None:
+            brackets = args.frame_brackets.split(',')
+            frame_kwargs['brackets'] = brackets
+            if len(brackets) != 2:
+                raise ValueError(
+                    f'Number of bracket chars is not 2: {len(brackets)}'
+                )
+
+        top_text = args.frame_top_text
+        bottom_text = args.frame_bottom_text
+
+        if top_text is None:
+            top_text = Path(file.name).name
+        if bottom_text is None:
+            bottom_text = hash_function.upper()
+
+        art = frame(
+            art,
+            top_text=top_text or None,
+            bottom_text=bottom_text or None,
+            **frame_kwargs,
+        )
 
     out.write(art)
     out.write('\n')

@@ -106,14 +106,21 @@ def frame(
     frame_t, frame_r, frame_b, frame_l = lines
     corner_tl, corner_tr, corner_br, corner_bl = corners
 
+    br_len = len(brackets[0]) + len(brackets[1])
     if top_text is None:
         top_text = ''
     else:
+        top_len = len(top_text) + br_len
+        if top_len > width:
+            top_text = top_text[: width - top_len - 3] + '...'
         top_text = top_text.join(brackets)
 
     if bottom_text is None:
         bottom_text = ''
     else:
+        bot_len = len(bottom_text) + br_len
+        if bot_len > width:
+            bottom_text = bottom_text[: width - bot_len - 3] + '...'
         bottom_text = bottom_text.join(brackets)
 
     top_line = top_text.center(width, frame_t).join((corner_tl, corner_tr))

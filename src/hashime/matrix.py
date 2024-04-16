@@ -1,14 +1,17 @@
-from typing import Callable, Generic, TypeVar
+from abc import ABC, abstractmethod
+from typing import Generic, TypeVar
 
 T = TypeVar('T')
 
 
-class Matrix(Generic[T]):
+class Matrix(ABC, Generic[T]):
     """
     2D matrix.
     """
 
-    def __init__(self, width: int, height: int, fill: T) -> None:
+    def __init__(
+        self, width: int, height: int, fill: T, digest: bytes | None = None
+    ) -> None:
         """
         Initializes a matrix.
 
@@ -18,6 +21,18 @@ class Matrix(Generic[T]):
             fill: Default matrix value.
         """
         self._matrix = [[fill for _ in range(width)] for _ in range(height)]
+        self._x = width // 2
+        self._y = height // 2
+        if digest is not None:
+            self.update(digest)
+
+    def update(self, data: bytes) -> None:
+        for byte in data:
+            self._process_byte(byte)
+
+    @abstractmethod
+    def _process_byte(self, byte: int) -> None:
+        pass
 
     def __getitem__(self, key: tuple[int, int]) -> T:
         x, y = key
@@ -31,11 +46,9 @@ class Matrix(Generic[T]):
     def width(self) -> int:
         """
         Matrix width.
-
-        Returns -1 if the matrix has no rows.
         """
         if not self._matrix:
-            return -1
+            return 0
         return len(self._matrix[0])
 
     @property
@@ -100,16 +113,12 @@ class Matrix(Generic[T]):
         new._matrix = matrix
         return new
 
-    def to_art(self, function: Callable[[T], str] = lambda x: str(x)) -> str:
+    @abstractmethod
+    def to_art(self) -> str:
         """
         Generates randomart.
-
-        Args:
-            function: Function that converts a matrix value into a string.
 
         Returns:
             Randomart.
         """
-        return '\n'.join(
-            ''.join(function(val) for val in row) for row in self._matrix
-        )
+        pass

@@ -1,3 +1,5 @@
+from contextlib import contextmanager
+
 from hashime.matrix import Matrix
 from hashime.util import bit_set_in_pos, clamp
 
@@ -32,20 +34,24 @@ class DrunkenBishop(Matrix[int]):
             )
 
     def _to_art(self) -> str:
-        # HACK: temporary overriding values to change start and end chars
-        # this is a bad idea, change this
+        with self._temporary_override_start_and_end_values():
+            art = '\n'.join(
+                ''.join(
+                    self._chars[clamp(x, 0, len(self._chars) - 1)] for x in row
+                )
+                for row in self._matrix
+            )
+            return art
+
+    @contextmanager
+    def _temporary_override_start_and_end_values(self):
         start_val = self[self._start_x, self._start_y]
         end_val = self[self._x, self._y]
+
         self[self._start_x, self._start_y] = len(self._chars) - 2
         self[self._x, self._y] = len(self._chars) - 1
-
-        art = '\n'.join(
-            ''.join(
-                self._chars[clamp(x, 0, len(self._chars) - 1)] for x in row
-            )
-            for row in self._matrix
-        )
-
-        self[self._start_x, self._start_y] = start_val
-        self[self._x, self._y] = end_val
-        return art
+        try:
+            yield
+        finally:
+            self[self._start_x, self._start_y] = start_val
+            self[self._x, self._y] = end_val

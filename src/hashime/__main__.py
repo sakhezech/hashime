@@ -7,10 +7,10 @@ from pathlib import Path
 from typing import Sequence
 
 from hashime.__version__ import __version__
-from hashime.drunken_bishop import drunken_bishop
-from hashime.util import frame
+from hashime.drunken_bishop import DrunkenBishop
+from hashime.matrix import Matrix
 
-_algorithms = [drunken_bishop]
+_algorithms: list[type[Matrix]] = [DrunkenBishop]
 
 
 def cli(argv: Sequence[str] | None = None):
@@ -48,9 +48,9 @@ def cli(argv: Sequence[str] | None = None):
         '-a',
         '--algorithm',
         choices=algorithms.keys(),
-        default='drunken_bishop',
+        default='DrunkenBishop',
         metavar='ALGO',
-        help='visualization algorithm (defaults to drunken_bishop)',
+        help='visualization algorithm (defaults to DrunkenBishop)',
     )
 
     parser.add_argument(
@@ -151,45 +151,43 @@ def cli(argv: Sequence[str] | None = None):
         algo_kwargs['width'] = args.width
     if args.height is not None:
         algo_kwargs['height'] = args.height
-    art = algorithm(digest, **algo_kwargs)
-    if should_be_framed:
-        frame_kwargs = {}
-        if args.frame_lines is not None:
-            lines = args.frame_lines.split(',')
-            frame_kwargs['lines'] = lines
-            if len(lines) != 4:
-                raise ValueError(
-                    f'Number of line chars is not 4: {len(lines)}'
-                )
-        if args.frame_corners is not None:
-            corners = args.frame_corners.split(',')
-            frame_kwargs['corners'] = corners
-            if len(corners) != 4:
-                raise ValueError(
-                    f'Number of corner chars is not 4: {len(corners)}'
-                )
-        if args.frame_brackets is not None:
-            brackets = args.frame_brackets.split(',')
-            frame_kwargs['brackets'] = brackets
-            if len(brackets) != 2:
-                raise ValueError(
-                    f'Number of bracket chars is not 2: {len(brackets)}'
-                )
 
-        top_text = args.frame_top_text
-        bottom_text = args.frame_bottom_text
+    frame_kwargs = {}
+    if args.frame_lines is not None:
+        lines = args.frame_lines.split(',')
+        frame_kwargs['lines'] = lines
+        if len(lines) != 4:
+            raise ValueError(f'Number of line chars is not 4: {len(lines)}')
+    if args.frame_corners is not None:
+        corners = args.frame_corners.split(',')
+        frame_kwargs['corners'] = corners
+        if len(corners) != 4:
+            raise ValueError(
+                f'Number of corner chars is not 4: {len(corners)}'
+            )
+    if args.frame_brackets is not None:
+        brackets = args.frame_brackets.split(',')
+        frame_kwargs['brackets'] = brackets
+        if len(brackets) != 2:
+            raise ValueError(
+                f'Number of bracket chars is not 2: {len(brackets)}'
+            )
 
-        if top_text is None:
-            top_text = Path(file.name).name
-        if bottom_text is None:
-            bottom_text = hash_function.upper()
+    top_text = args.frame_top_text
+    bottom_text = args.frame_bottom_text
 
-        art = frame(
-            art,
-            top_text=top_text or None,
-            bottom_text=bottom_text or None,
-            **frame_kwargs,
-        )
+    if top_text is None:
+        top_text = Path(file.name).name
+    if bottom_text is None:
+        bottom_text = hash_function.upper()
+
+    algo = algorithm(digest=digest, **algo_kwargs)
+    art = algo.to_art(
+        should_be_framed,
+        top_text=top_text or None,
+        bottom_text=bottom_text or None,
+        **frame_kwargs,
+    )
 
     out.write(art)
     out.write('\n')

@@ -135,7 +135,7 @@ class Matrix(ABC, Generic[T]):
 
         Returns:
             Randomart.
-        """
+        """  # noqa: E501
         art = self._to_art()
 
         if not framed:

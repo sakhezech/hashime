@@ -40,4 +40,4 @@ art2 = textwrap.dedent("""\
 @pytest.mark.parametrize('key, art', [(key1, art1), (key2, art2)])
 def test_drunken_bishop(key, art):
     digest = key_to_digest(key)
-    assert hashime.drunken_bishop(digest) == art
+    assert hashime.DrunkenBishop(17, 9, digest).to_art(framed=False) == art

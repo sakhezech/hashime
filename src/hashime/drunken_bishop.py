@@ -31,7 +31,7 @@ class DrunkenBishop(Matrix[int]):
                 self[self._x, self._y] + 1, 0, len(self._chars) - 3
             )
 
-    def to_art(self) -> str:
+    def _to_art(self) -> str:
         # HACK: temporary overriding values to change start and end chars
         # this is a bad idea, change this
         start_val = self[self._start_x, self._start_y]
@@ -49,13 +49,3 @@ class DrunkenBishop(Matrix[int]):
         self[self._start_x, self._start_y] = start_val
         self[self._x, self._y] = end_val
         return art
-
-
-def drunken_bishop(
-    digest: bytes,
-    width: int = 17,
-    height: int = 9,
-    chars: str = ' .o+=*BOX@%&#/^SE',
-):
-    drunk = DrunkenBishop(width, height, digest, chars)
-    return drunk.to_art()

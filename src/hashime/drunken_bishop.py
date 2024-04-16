@@ -9,9 +9,9 @@ class DrunkenBishop(Matrix[int]):
 
     def __init__(
         self,
-        width: int,
-        height: int,
         digest: bytes | None = None,
+        width: int = 17,
+        height: int = 9,
         chars: str = ' .o+=*BOX@%&#/^SE',
     ) -> None:
         self._start_x = width // 2

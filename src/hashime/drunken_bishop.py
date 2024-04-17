@@ -1,10 +1,10 @@
 from contextlib import contextmanager
 
-from hashime.matrix import Matrix
+from hashime.matrix import Algorithm
 from hashime.util import bit_set_in_pos, clamp
 
 
-class DrunkenBishop(Matrix[int]):
+class DrunkenBishop(Algorithm[int]):
     """
     Drunken Bishop algorithm used in ssh-keygen.
     """
@@ -16,6 +16,15 @@ class DrunkenBishop(Matrix[int]):
         height: int = 9,
         chars: str = ' .o+=*BOX@%&#/^SE',
     ) -> None:
+        """
+        Initializes a Drunken Bishop.
+
+        Args:
+            digest: Input bytes.
+            width: Width.
+            height: Height.
+            chars: Character set used to fill in the randomart.
+        """
         self._start_x = width // 2
         self._start_y = height // 2
         self._chars = chars

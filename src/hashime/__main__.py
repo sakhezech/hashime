@@ -8,9 +8,9 @@ from typing import Sequence
 
 from hashime.__version__ import __version__
 from hashime.drunken_bishop import DrunkenBishop
-from hashime.matrix import Matrix
+from hashime.matrix import Algorithm
 
-_algorithms: list[type[Matrix]] = [DrunkenBishop]
+_algorithms: list[type[Algorithm]] = [DrunkenBishop]
 
 
 def cli(argv: Sequence[str] | None = None):

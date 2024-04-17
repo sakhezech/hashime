@@ -4,21 +4,22 @@ from typing import Generic, TypeVar
 T = TypeVar('T')
 
 
-class Matrix(ABC, Generic[T]):
+class Algorithm(ABC, Generic[T]):
     """
-    2D matrix.
+    Base class for algorithms.
     """
 
     def __init__(
         self, width: int, height: int, fill: T, digest: bytes | None = None
     ) -> None:
         """
-        Initializes a matrix.
+        Initializes an algorithm.
 
         Args:
             width: Matrix width.
-            height : Matrix height.
+            height: Matrix height.
             fill: Default matrix value.
+            digest: Input bytes.
         """
         self._matrix = [[fill for _ in range(width)] for _ in range(height)]
         self._x = width // 2
@@ -27,6 +28,12 @@ class Matrix(ABC, Generic[T]):
             self.update(digest)
 
     def update(self, data: bytes) -> None:
+        """
+        Feeds bytes into the algorithm.
+
+        Args:
+            data: Input bytes.
+        """
         for byte in data:
             self._process_byte(byte)
 
@@ -60,11 +67,11 @@ class Matrix(ABC, Generic[T]):
 
     def overlay(
         self,
-        other: 'Matrix[T]',
+        other: 'Algorithm[T]',
         x_off: int,
         y_off: int,
         ignore: T | None = None,
-    ) -> 'Matrix[T]':
+    ) -> 'Algorithm[T]':
         """
         Overlays a matrix over this one.
 
@@ -87,7 +94,7 @@ class Matrix(ABC, Generic[T]):
                     self[new_x, new_y] = val
         return self
 
-    def reverse(self) -> 'Matrix[T]':
+    def reverse(self) -> 'Algorithm[T]':
         """
         Horizontally mirrors the matrix.
 
@@ -99,7 +106,7 @@ class Matrix(ABC, Generic[T]):
         return self
 
     @classmethod
-    def from_matrix(cls, matrix: list[list[T]]) -> 'Matrix[T]':
+    def from_matrix(cls, matrix: list[list[T]]) -> 'Algorithm[T]':
         """
         Initializes a matrix from a pre-made matrix.
 

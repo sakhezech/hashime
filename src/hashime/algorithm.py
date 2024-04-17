@@ -1,16 +1,16 @@
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
-T = TypeVar('T')
+_T = TypeVar('_T')
 
 
-class Algorithm(ABC, Generic[T]):
+class Algorithm(ABC, Generic[_T]):
     """
     Base class for algorithms.
     """
 
     def __init__(
-        self, width: int, height: int, fill: T, digest: bytes | None = None
+        self, width: int, height: int, fill: _T, digest: bytes | None = None
     ) -> None:
         """
         Initializes an algorithm.
@@ -41,11 +41,11 @@ class Algorithm(ABC, Generic[T]):
     def _process_byte(self, byte: int) -> None:
         pass
 
-    def __getitem__(self, key: tuple[int, int]) -> T:
+    def __getitem__(self, key: tuple[int, int]) -> _T:
         x, y = key
         return self._matrix[y][x]
 
-    def __setitem__(self, key: tuple[int, int], value: T) -> None:
+    def __setitem__(self, key: tuple[int, int], value: _T) -> None:
         x, y = key
         self._matrix[y][x] = value
 
@@ -67,11 +67,11 @@ class Algorithm(ABC, Generic[T]):
 
     def overlay(
         self,
-        other: 'Algorithm[T]',
+        matrix: list[list[_T]],
         x_off: int,
         y_off: int,
-        ignore: T | None = None,
-    ) -> 'Algorithm[T]':
+        ignore: _T | None = None,
+    ) -> 'Algorithm[_T]':
         """
         Overlays a matrix over this one.
 
@@ -84,7 +84,7 @@ class Algorithm(ABC, Generic[T]):
         Returns:
             Self.
         """
-        for y, row in enumerate(other._matrix):
+        for y, row in enumerate(matrix):
             for x, val in enumerate(row):
                 if val == ignore:
                     continue
@@ -93,32 +93,6 @@ class Algorithm(ABC, Generic[T]):
                 if 0 <= new_y < self.height and 0 <= new_x < self.width:
                     self[new_x, new_y] = val
         return self
-
-    def reverse(self) -> 'Algorithm[T]':
-        """
-        Horizontally mirrors the matrix.
-
-        Returns:
-            Self.
-        """
-        for row in self._matrix:
-            row.reverse()
-        return self
-
-    @classmethod
-    def from_matrix(cls, matrix: list[list[T]]) -> 'Algorithm[T]':
-        """
-        Initializes a matrix from a pre-made matrix.
-
-        Args:
-            matrix: Pre-made matrix.
-
-        Returns:
-            A matrix.
-        """
-        new = cls.__new__(cls)
-        new._matrix = matrix
-        return new
 
     def to_art(
         self,

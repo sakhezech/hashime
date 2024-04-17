@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from hashime.matrix import Algorithm
+from hashime.algorithm import Algorithm
 from hashime.util import bit_set_in_pos, clamp
 
 

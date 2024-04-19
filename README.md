@@ -34,7 +34,7 @@ options:
   -l, -la, --list-algo  show visualization algorithms and exit
   -lh, --list-hash      show available hashing functions and exit
   -a ALGO, --algorithm ALGO
-                        visualization algorithm (defaults to drunken_bishop)
+                        visualization algorithm (defaults to DrunkenBishop)
   -hf HASH, --hash-function HASH
                         hashing function (defaults to sha256)
   --width WIDTH         visualization width
@@ -44,8 +44,8 @@ options:
                         text on the top frame line
   --frame-bottom-text BOTTOM_TEXT
                         text on the bottom frame line
-  --frame-lines LINES   comma-separated frame side symbols in a clockwise
-                        order from the top
+  --frame-lines LINES   comma-separated frame side symbols in a clockwise order
+                        from the top
   --frame-corners CORNERS
                         comma-separated frame corner symbols in a clockwise
                         order from the top-left
@@ -60,19 +60,16 @@ options:
 
 ```py
 >>> import hashime
->>> import pathlib
->>> file_path = pathlib.Path('./LICENSE')
->>> digest = hashime.file_digest(file_path)
->>> art = hashime.drunken_bishop(digest)
->>> framed = hashime.frame(
-...     art,
-...     top_text=file_path.name,
+>>> bishop = hashime.DrunkenBishop()
+>>> bishop.update_fp('./LICENSE')
+>>> art = bishop.to_art(
+...     top_text='LICENSE',
 ...     bottom_text='SHA256',
 ...     brackets=('<', '>'),
 ...     lines=('═', '│', '─', '║'),
 ...     corners=('╔', '╕', '┘', '╙'),
 ... )
->>> print(framed)
+>>> print(art)
 ╔════<LICENSE>════╕
 ║    ..o +        │
 ║   o E.= o       │
@@ -93,8 +90,8 @@ Use `ruff check --fix .` and `ruff format .` to check and format your code.
 To get started:
 
 ```sh
-git clone https://github.com/sakhezech/combustache
-cd combustache
+git clone https://github.com/sakhezech/hashime
+cd hashime
 python -m venv .venv
 source .venv/bin/activate
 pip install -e '.[dev]'

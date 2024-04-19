@@ -19,10 +19,10 @@ Typical usage as CLI::
 Typical usage in code::
 
     >>> import hashime
-    >>> digest = hashime.file_digest('./LICENSE')
-    >>> art = hashime.drunken_bishop(digest)
-    >>> framed = hashime.frame(art, top_text='LICENSE', bottom_text='SHA256')
-    >>> print(framed)
+    >>> bishop = hashime.DrunkenBishop()
+    >>> bishop.update_fp('./LICENSE')
+    >>> art = bishop.to_art(top_text='LICENSE', bottom_text='SHA256')
+    >>> print(art)
     +----[LICENSE]----+
     |    ..o +        |
     |   o E.= o       |

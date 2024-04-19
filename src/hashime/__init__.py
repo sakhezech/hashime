@@ -37,6 +37,5 @@ Typical usage in code::
 """
 
 from hashime.drunken_bishop import DrunkenBishop
-from hashime.util import file_digest
 
-__all__ = ['DrunkenBishop', 'file_digest']
+__all__ = ['DrunkenBishop']

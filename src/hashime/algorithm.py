@@ -1,6 +1,9 @@
+import hashlib
+import os
 from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 
+StrPath = os.PathLike[str] | str
 _T = TypeVar('_T')
 
 
@@ -36,6 +39,18 @@ class Algorithm(ABC, Generic[_T]):
         """
         for byte in data:
             self._process_byte(byte)
+
+    def update_fp(self, fp: StrPath, hash_function: str = 'sha256') -> None:
+        """
+        Feeds a file digest into the algorithm.
+
+        Args:
+            fp: File path.
+            hash_function: Hash function.
+        """
+        with open(fp, 'rb') as f:
+            digest = hashlib.file_digest(f, hash_function).digest()
+            self.update(digest)
 
     @abstractmethod
     def _process_byte(self, byte: int) -> None:

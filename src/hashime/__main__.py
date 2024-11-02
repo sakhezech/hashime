@@ -1,7 +1,6 @@
 import argparse
 import base64
 import hashlib
-import sys
 from io import BufferedReader, TextIOWrapper
 from pathlib import Path
 from typing import Sequence
@@ -29,19 +28,13 @@ def cli(argv: Sequence[str] | None = None):
 
     parser.add_argument(
         '-l',
-        '-la',
-        '--list-algo',
+        '--list',
+        nargs=0,
         action=PrintAndExitAction,
-        const=', '.join(algorithms.keys()),
-        help='show visualization algorithms and exit',
-    )
-
-    parser.add_argument(
-        '-lh',
-        '--list-hash',
-        action=PrintAndExitAction,
-        const=', '.join(hashlib.algorithms_available),
-        help='show available hashing functions and exit',
+        const=f"""\
+Algorithms:\n    {', '.join(algorithms.keys())}
+Hash Functions:\n    {', '.join(sorted(hashlib.algorithms_available))}""",
+        help='show visualization algorithms and hashing functions and exit',
     )
 
     parser.add_argument(
@@ -54,7 +47,7 @@ def cli(argv: Sequence[str] | None = None):
     )
 
     parser.add_argument(
-        '-hf',
+        '-H',
         '--hash-function',
         choices=hashlib.algorithms_available,
         default='sha256',
@@ -113,7 +106,8 @@ def cli(argv: Sequence[str] | None = None):
     )
 
     parser.add_argument(
-        '--show-digest',
+        '-d',
+        '--digest',
         action='store_true',
         help='output digest',
     )
@@ -140,7 +134,7 @@ def cli(argv: Sequence[str] | None = None):
     algorithm = algorithms[args.algorithm]
     hash_function: str = args.hash_function
     should_be_framed: bool = not args.no_frame
-    should_show_digest: bool = args.show_digest
+    should_show_digest: bool = args.digest
     out: TextIOWrapper = args.output
     file: BufferedReader = args.file
 
@@ -197,31 +191,8 @@ def cli(argv: Sequence[str] | None = None):
 
 
 class PrintAndExitAction(argparse.Action):
-    def __init__(
-        self,
-        option_strings,
-        const=None,
-        dest=argparse.SUPPRESS,
-        default=argparse.SUPPRESS,
-        help=None,
-    ):
-        super(PrintAndExitAction, self).__init__(
-            option_strings=option_strings,
-            dest=dest,
-            default=default,
-            const=const,
-            nargs=0,
-            help=help,
-        )
-        self.text = const
-
-    def __call__(self, parser, namespace, values, option_string=None):
-        text = self.text
-        if text is None:
-            text = ''
-        formatter = parser._get_formatter()
-        formatter.add_text(text)
-        parser._print_message(formatter.format_help(), sys.stdout)
+    def __call__(self, parser, *_):
+        print(self.const)
         parser.exit()
 
 

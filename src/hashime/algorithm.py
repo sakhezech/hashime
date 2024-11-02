@@ -30,6 +30,7 @@ class Algorithm(ABC, Generic[_T]):
         if digest is not None:
             self.update(digest)
 
+    @abstractmethod
     def update(self, data: bytes) -> None:
         """
         Feeds bytes into the algorithm.
@@ -37,8 +38,7 @@ class Algorithm(ABC, Generic[_T]):
         Args:
             data: Input bytes.
         """
-        for byte in data:
-            self._process_byte(byte)
+        pass
 
     def update_fp(self, fp: StrPath, hash_function: str = 'sha256') -> None:
         """
@@ -51,10 +51,6 @@ class Algorithm(ABC, Generic[_T]):
         with open(fp, 'rb') as f:
             digest = hashlib.file_digest(f, hash_function).digest()
             self.update(digest)
-
-    @abstractmethod
-    def _process_byte(self, byte: int) -> None:
-        pass
 
     def __getitem__(self, key: tuple[int, int]) -> _T:
         x, y = key

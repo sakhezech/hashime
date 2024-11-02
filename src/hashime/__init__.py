@@ -20,7 +20,7 @@ Typical usage in code::
 
     >>> import hashime
     >>> bishop = hashime.DrunkenBishop()
-    >>> bishop.update_fp('./LICENSE')
+    >>> bishop.update_from_path('./LICENSE')
     >>> art = bishop.to_art(top_text='LICENSE', bottom_text='SHA256')
     >>> print(art)
     +----[LICENSE]----+

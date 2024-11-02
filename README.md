@@ -8,6 +8,12 @@ How can something so soulless be so pretty?
 
 ## Installation
 
+From PyPI:
+
+```sh
+pip install hashime
+```
+
 From git:
 
 ```sh
@@ -20,22 +26,22 @@ pip install git+https://github.com/sakhezech/hashime
 
 ```console
 $ hashime -h
-usage: hashime [-h] [-v] [-l] [-lh] [-a ALGO] [-hf HASH] [--width WIDTH]
+usage: hashime [-h] [-v] [-l] [-a ALGO] [-H HASH] [--width WIDTH]
                [--height HEIGHT] [--no-frame] [--frame-top-text TOP_TEXT]
                [--frame-bottom-text BOTTOM_TEXT] [--frame-lines LINES]
-               [--frame-corners CORNERS] [--frame-brackets BRACKETS]
-               [--show-digest] [-f FILE] [-o OUT]
+               [--frame-corners CORNERS] [--frame-brackets BRACKETS] [-d]
+               [-f FILE] [-o OUT]
 
 hash visualization tool
 
 options:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
-  -l, -la, --list-algo  show visualization algorithms and exit
-  -lh, --list-hash      show available hashing functions and exit
+  -l, --list            show visualization algorithms and hashing functions and
+                        exit
   -a ALGO, --algorithm ALGO
                         visualization algorithm (defaults to DrunkenBishop)
-  -hf HASH, --hash-function HASH
+  -H HASH, --hash-function HASH
                         hashing function (defaults to sha256)
   --width WIDTH         visualization width
   --height HEIGHT       visualization height
@@ -51,9 +57,23 @@ options:
                         order from the top-left
   --frame-brackets BRACKETS
                         comma-separated symbols surrounding frame text
-  --show-digest         output digest
+  -d, --digest          output digest
   -f FILE, --file FILE  input file (defaults to stdin)
   -o OUT, --output OUT  output file (defaults to stdout)
+
+$ hashime -H md5 -d -f LICENSE
++----[LICENSE]----+
+|                 |
+|         .       |
+|  . .   o        |
+| . = o +         |
+|  * * + S        |
+| o O +           |
+|  * = +          |
+| . + = .         |
+|    E .          |
++------[MD5]------+
+md5: lGqJe4ZYqSXluPYkZOH/oQ==
 ```
 
 ## Usage in code
@@ -61,7 +81,7 @@ options:
 ```py
 >>> import hashime
 >>> bishop = hashime.DrunkenBishop()
->>> bishop.update_fp('./LICENSE')
+>>> bishop.update_from_path('./LICENSE')
 >>> art = bishop.to_art(
 ...     top_text='LICENSE',
 ...     bottom_text='SHA256',

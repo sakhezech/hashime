@@ -1,8 +1,8 @@
 [project]
 name = 'hashime'
 readme = 'README.md'
-description = 'randomart'
-license = { file = 'LICENSE' }
+description = 'hash visualization tool'
+license = 'MIT'
 dependencies = []
 dynamic = ['version']
 

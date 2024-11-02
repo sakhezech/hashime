@@ -40,15 +40,17 @@ class Algorithm(ABC, Generic[_T]):
         """
         pass
 
-    def update_fp(self, fp: StrPath, hash_function: str = 'sha256') -> None:
+    def update_from_path(
+        self, path: StrPath, hash_function: str = 'sha256'
+    ) -> None:
         """
         Feeds a file digest into the algorithm.
 
         Args:
-            fp: File path.
+            path: File path.
             hash_function: Hash function.
         """
-        with open(fp, 'rb') as f:
+        with open(path, 'rb') as f:
             digest = hashlib.file_digest(f, hash_function).digest()
             self.update(digest)
 

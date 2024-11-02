@@ -2,8 +2,9 @@ import base64
 import hashlib
 import textwrap
 
-import hashime
 import pytest
+
+import hashime
 
 
 def key_to_digest(key: str) -> bytes:

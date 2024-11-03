@@ -10,7 +10,7 @@ from hashime.__version__ import __version__
 from hashime.algorithm import Algorithm
 from hashime.drunken_bishop import DrunkenBishop
 
-_algorithms: list[type[Algorithm]] = [DrunkenBishop]
+_algorithms: dict[str, type[Algorithm]] = {'drunken_bishop': DrunkenBishop}
 _digest_choices: dict[str, Callable[[bytes], str]] = {
     'base64': lambda b: base64.standard_b64encode(b).decode(),
     'hex': lambda b: b.hex(),
@@ -18,7 +18,6 @@ _digest_choices: dict[str, Callable[[bytes], str]] = {
 
 
 def cli(argv: Sequence[str] | None = None):
-    algorithms = {algorithm.__name__: algorithm for algorithm in _algorithms}
     parser = argparse.ArgumentParser(
         prog='hashime',
         description='hash visualization tool',
@@ -37,7 +36,7 @@ def cli(argv: Sequence[str] | None = None):
         nargs=0,
         action=PrintAndExitAction,
         const=f"""\
-Algorithms:\n    {', '.join(algorithms.keys())}
+Algorithms:\n    {', '.join(_algorithms.keys())}
 Hash Functions:\n    {', '.join(sorted(hashlib.algorithms_available))}
 Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
         help='show visualization algorithms, hashing functions, '
@@ -47,10 +46,10 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
     parser.add_argument(
         '-a',
         '--algorithm',
-        choices=algorithms.keys(),
-        default='DrunkenBishop',
+        choices=_algorithms.keys(),
+        default='drunken_bishop',
         metavar='ALGO',
-        help='visualization algorithm (defaults to DrunkenBishop)',
+        help='visualization algorithm (defaults to drunken_bishop)',
     )
 
     parser.add_argument(
@@ -142,7 +141,7 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
 
     args = parser.parse_args(argv)
 
-    algorithm = algorithms[args.algorithm]
+    algorithm = _algorithms[args.algorithm]
     hash_function: str = args.hash_function
     should_be_framed: bool = not args.no_frame
     digest_form: str | None = args.digest

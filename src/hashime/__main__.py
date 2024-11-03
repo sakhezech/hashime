@@ -73,7 +73,20 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
         help='visualization height',
     )
 
-    parser.add_argument(
+    frame_group = parser.add_mutually_exclusive_group()
+
+    frame_group.add_argument(
+        '--frame',
+        default='-,|,-,|,+,+,+,+,[,]',
+        help="""
+        comma-separated frame characters in order of
+        (top_line, right_line, bottom_line, left_line,
+        top_left_corner, top_right_corner, bottom_right_corner,
+        bottom_left_corner, left_bracket, right_bracket)
+        """,
+    )
+
+    frame_group.add_argument(
         '--no-frame',
         action='store_true',
         help='output visualization without a frame',
@@ -89,26 +102,6 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
         '--frame-bottom-text',
         metavar='BOTTOM_TEXT',
         help='text on the bottom frame line',
-    )
-
-    parser.add_argument(
-        '--frame-lines',
-        metavar='LINES',
-        help='comma-separated frame side symbols '
-        'in a clockwise order from the top',
-    )
-
-    parser.add_argument(
-        '--frame-corners',
-        metavar='CORNERS',
-        help='comma-separated frame corner symbols '
-        'in a clockwise order from the top-left',
-    )
-
-    parser.add_argument(
-        '--frame-brackets',
-        metavar='BRACKETS',
-        help='comma-separated symbols surrounding frame text',
     )
 
     parser.add_argument(
@@ -157,25 +150,15 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
         algo_kwargs['height'] = args.height
 
     frame_kwargs = {}
-    if args.frame_lines is not None:
-        lines = args.frame_lines.split(',')
-        frame_kwargs['lines'] = lines
-        if len(lines) != 4:
-            raise ValueError(f'Number of line chars is not 4: {len(lines)}')
-    if args.frame_corners is not None:
-        corners = args.frame_corners.split(',')
-        frame_kwargs['corners'] = corners
-        if len(corners) != 4:
+    if not args.no_frame:
+        val = args.frame.split(',')
+        if len(val) != 10:
             raise ValueError(
-                f'Number of corner chars is not 4: {len(corners)}'
+                f'number of frame characters is not 10: {len(val)}'
             )
-    if args.frame_brackets is not None:
-        brackets = args.frame_brackets.split(',')
-        frame_kwargs['brackets'] = brackets
-        if len(brackets) != 2:
-            raise ValueError(
-                f'Number of bracket chars is not 2: {len(brackets)}'
-            )
+        frame_kwargs['lines'] = val[:4]
+        frame_kwargs['corners'] = val[4:8]
+        frame_kwargs['brackets'] = val[8:]
 
     top_text = args.frame_top_text
     bottom_text = args.frame_bottom_text

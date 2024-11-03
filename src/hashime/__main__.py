@@ -1,6 +1,7 @@
 import argparse
 import base64
 import hashlib
+from collections.abc import Callable
 from io import BufferedReader, TextIOWrapper
 from pathlib import Path
 from typing import Sequence
@@ -10,6 +11,10 @@ from hashime.algorithm import Algorithm
 from hashime.drunken_bishop import DrunkenBishop
 
 _algorithms: list[type[Algorithm]] = [DrunkenBishop]
+_digest_choices: dict[str, Callable[[bytes], str]] = {
+    'base64': lambda b: base64.standard_b64encode(b).decode(),
+    'hex': lambda b: b.hex(),
+}
 
 
 def cli(argv: Sequence[str] | None = None):
@@ -33,8 +38,10 @@ def cli(argv: Sequence[str] | None = None):
         action=PrintAndExitAction,
         const=f"""\
 Algorithms:\n    {', '.join(algorithms.keys())}
-Hash Functions:\n    {', '.join(sorted(hashlib.algorithms_available))}""",
-        help='show visualization algorithms and hashing functions and exit',
+Hash Functions:\n    {', '.join(sorted(hashlib.algorithms_available))}
+Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
+        help='show visualization algorithms, hashing functions, '
+        'digest forms and exit',
     )
 
     parser.add_argument(
@@ -108,8 +115,12 @@ Hash Functions:\n    {', '.join(sorted(hashlib.algorithms_available))}""",
     parser.add_argument(
         '-d',
         '--digest',
-        action='store_true',
-        help='output digest',
+        nargs='?',
+        metavar='DIGEST_FORM',
+        default=None,
+        const='base64',
+        choices=_digest_choices.keys(),
+        help='show digest (defaults to base64)',
     )
 
     parser.add_argument(
@@ -134,7 +145,7 @@ Hash Functions:\n    {', '.join(sorted(hashlib.algorithms_available))}""",
     algorithm = algorithms[args.algorithm]
     hash_function: str = args.hash_function
     should_be_framed: bool = not args.no_frame
-    should_show_digest: bool = args.digest
+    digest_form: str | None = args.digest
     out: TextIOWrapper = args.output
     file: BufferedReader = args.file
 
@@ -185,8 +196,8 @@ Hash Functions:\n    {', '.join(sorted(hashlib.algorithms_available))}""",
 
     out.write(art)
     out.write('\n')
-    if should_show_digest:
-        encoded = base64.standard_b64encode(digest).decode()
+    if digest_form:
+        encoded = _digest_choices[digest_form](digest)
         out.write(f'{hash_function}: {encoded}\n')
 
 

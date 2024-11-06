@@ -93,14 +93,12 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
     )
 
     parser.add_argument(
-        '--frame-top-text',
-        metavar='TOP_TEXT',
+        '--top-text',
         help='text on the top frame line',
     )
 
     parser.add_argument(
-        '--frame-bottom-text',
-        metavar='BOTTOM_TEXT',
+        '--bottom-text',
         help='text on the bottom frame line',
     )
 
@@ -160,8 +158,8 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
         frame_kwargs['corners'] = val[4:8]
         frame_kwargs['brackets'] = val[8:]
 
-    top_text = args.frame_top_text
-    bottom_text = args.frame_bottom_text
+    top_text = args.top_text
+    bottom_text = args.bottom_text
 
     if top_text is None:
         top_text = Path(file.name).name

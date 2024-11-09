@@ -36,6 +36,6 @@ Typical usage in code::
     +-----[SHA256]----+
 """
 
-from hashime.drunken_bishop import DrunkenBishop
+from .drunken_bishop import DrunkenBishop
 
 __all__ = ['DrunkenBishop']

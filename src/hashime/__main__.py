@@ -6,9 +6,9 @@ from io import BufferedReader, TextIOWrapper
 from pathlib import Path
 from typing import Sequence
 
-from hashime.__version__ import __version__
-from hashime.algorithm import Algorithm
-from hashime.drunken_bishop import DrunkenBishop
+from .__version__ import __version__
+from .algorithm import Algorithm
+from .drunken_bishop import DrunkenBishop
 
 _algorithms: dict[str, type[Algorithm]] = {'drunken_bishop': DrunkenBishop}
 _digest_choices: dict[str, Callable[[bytes], str]] = {

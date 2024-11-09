@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
-from hashime.algorithm import Algorithm
-from hashime.util import bit_set_in_pos, clamp
+from .algorithm import Algorithm
+from .util import bit_set_in_pos, clamp
 
 
 class DrunkenBishop(Algorithm):

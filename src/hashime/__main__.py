@@ -61,18 +61,6 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
         help='hashing function (defaults to sha256)',
     )
 
-    parser.add_argument(
-        '--width',
-        type=int,
-        help='visualization width',
-    )
-
-    parser.add_argument(
-        '--height',
-        type=int,
-        help='visualization height',
-    )
-
     frame_group = parser.add_mutually_exclusive_group()
 
     frame_group.add_argument(
@@ -141,12 +129,6 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
 
     digest = hashlib.file_digest(file, hash_function).digest()
 
-    algo_kwargs = {}
-    if args.width is not None:
-        algo_kwargs['width'] = args.width
-    if args.height is not None:
-        algo_kwargs['height'] = args.height
-
     frame_kwargs = {}
     if not args.no_frame:
         val = args.frame.split(',')
@@ -166,7 +148,7 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
     if bottom_text is None:
         bottom_text = hash_function.upper()
 
-    algo = algorithm(digest=digest, **algo_kwargs)
+    algo = algorithm(digest=digest)
     art = algo.to_art(
         should_be_framed,
         top_text=top_text or None,

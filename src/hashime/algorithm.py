@@ -1,32 +1,22 @@
 import hashlib
 import os
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
 
 StrPath = os.PathLike[str] | str
-_T = TypeVar('_T')
 
 
-class Algorithm(ABC, Generic[_T]):
+class Algorithm(ABC):
     """
     Base class for algorithms.
     """
 
-    def __init__(
-        self, width: int, height: int, fill: _T, digest: bytes | None = None
-    ) -> None:
+    def __init__(self, digest: bytes | None = None) -> None:
         """
         Initializes an algorithm.
 
         Args:
-            width: Matrix width.
-            height: Matrix height.
-            fill: Default matrix value.
             digest: Input bytes.
         """
-        self._matrix = [[fill for _ in range(width)] for _ in range(height)]
-        self._x = width // 2
-        self._y = height // 2
         if digest is not None:
             self.update(digest)
 
@@ -53,59 +43,6 @@ class Algorithm(ABC, Generic[_T]):
         with open(path, 'rb') as f:
             digest = hashlib.file_digest(f, hash_function).digest()
             self.update(digest)
-
-    def __getitem__(self, key: tuple[int, int]) -> _T:
-        x, y = key
-        return self._matrix[y][x]
-
-    def __setitem__(self, key: tuple[int, int], value: _T) -> None:
-        x, y = key
-        self._matrix[y][x] = value
-
-    @property
-    def width(self) -> int:
-        """
-        Matrix width.
-        """
-        if not self._matrix:
-            return 0
-        return len(self._matrix[0])
-
-    @property
-    def height(self) -> int:
-        """
-        Matrix height.
-        """
-        return len(self._matrix)
-
-    def overlay(
-        self,
-        matrix: list[list[_T]],
-        x_off: int,
-        y_off: int,
-        ignore: _T | None = None,
-    ) -> 'Algorithm[_T]':
-        """
-        Overlays a matrix over this one.
-
-        Args:
-            other: Matrix to overlay.
-            x_off: X-axis offset.
-            y_off: Y-axis offset.
-            ignore: Value to ignore while overlaying.
-
-        Returns:
-            Self.
-        """
-        for y, row in enumerate(matrix):
-            for x, val in enumerate(row):
-                if val == ignore:
-                    continue
-                new_y = y + y_off
-                new_x = x + x_off
-                if 0 <= new_y < self.height and 0 <= new_x < self.width:
-                    self[new_x, new_y] = val
-        return self
 
     def to_art(
         self,

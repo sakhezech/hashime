@@ -4,7 +4,7 @@ from hashime.algorithm import Algorithm
 from hashime.util import bit_set_in_pos, clamp
 
 
-class DrunkenBishop(Algorithm[int]):
+class DrunkenBishop(Algorithm):
     """
     Drunken Bishop algorithm used in ssh-keygen.
     """
@@ -25,10 +25,23 @@ class DrunkenBishop(Algorithm[int]):
             height: Height.
             chars: Character set used to fill in the randomart.
         """
+        self.width = width
+        self.height = height
         self._start_x = width // 2
         self._start_y = height // 2
         self._chars = chars
-        super().__init__(width, height, 0, digest)
+        self._matrix = [[0 for _ in range(width)] for _ in range(height)]
+        self._x = width // 2
+        self._y = height // 2
+        super().__init__(digest)
+
+    def __getitem__(self, key: tuple[int, int]) -> int:
+        x, y = key
+        return self._matrix[y][x]
+
+    def __setitem__(self, key: tuple[int, int], value: int) -> None:
+        x, y = key
+        self._matrix[y][x] = value
 
     def update(self, data: bytes) -> None:
         for byte in data:

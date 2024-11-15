@@ -26,38 +26,31 @@ pip install git+https://github.com/sakhezech/hashime
 
 ```console
 $ hashime -h
-usage: hashime [-h] [-v] [-l] [-a ALGO] [-H HASH] [--width WIDTH]
-               [--height HEIGHT] [--no-frame] [--frame-top-text TOP_TEXT]
-               [--frame-bottom-text BOTTOM_TEXT] [--frame-lines LINES]
-               [--frame-corners CORNERS] [--frame-brackets BRACKETS] [-d]
-               [-f FILE] [-o OUT]
+usage: hashime [-h] [-v] [-l] [-a ALGO] [-H HASH] [--frame FRAME | --no-frame]
+               [--top-text TOP_TEXT] [--bottom-text BOTTOM_TEXT]
+               [-d [DIGEST_FORM]] [-f FILE] [-o OUT]
 
 hash visualization tool
 
 options:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
-  -l, --list            show visualization algorithms and hashing functions and
-                        exit
+  -l, --list            show visualization algorithms, hashing functions,
+                        digest forms and exit
   -a ALGO, --algorithm ALGO
-                        visualization algorithm (defaults to DrunkenBishop)
+                        visualization algorithm (defaults to drunken_bishop)
   -H HASH, --hash-function HASH
                         hashing function (defaults to sha256)
-  --width WIDTH         visualization width
-  --height HEIGHT       visualization height
+  --frame FRAME         comma-separated frame characters in order of (top_line,
+                        right_line, bottom_line, left_line, top_left_corner,
+                        top_right_corner, bottom_right_corner,
+                        bottom_left_corner, left_bracket, right_bracket)
   --no-frame            output visualization without a frame
-  --frame-top-text TOP_TEXT
-                        text on the top frame line
-  --frame-bottom-text BOTTOM_TEXT
+  --top-text TOP_TEXT   text on the top frame line
+  --bottom-text BOTTOM_TEXT
                         text on the bottom frame line
-  --frame-lines LINES   comma-separated frame side symbols in a clockwise order
-                        from the top
-  --frame-corners CORNERS
-                        comma-separated frame corner symbols in a clockwise
-                        order from the top-left
-  --frame-brackets BRACKETS
-                        comma-separated symbols surrounding frame text
-  -d, --digest          output digest
+  -d [DIGEST_FORM], --digest [DIGEST_FORM]
+                        show digest (defaults to base64)
   -f FILE, --file FILE  input file (defaults to stdin)
   -o OUT, --output OUT  output file (defaults to stdout)
 
@@ -81,7 +74,7 @@ md5: lGqJe4ZYqSXluPYkZOH/oQ==
 ```py
 >>> import hashime
 >>> bishop = hashime.DrunkenBishop()
->>> bishop.update_from_path('./LICENSE')
+>>> bishop.update_from_file_hash('./LICENSE')
 >>> art = bishop.to_art(
 ...     top_text='LICENSE',
 ...     bottom_text='SHA256',

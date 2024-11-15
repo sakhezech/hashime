@@ -1,8 +1,11 @@
 import hashlib
+import io
 import os
 from abc import ABC, abstractmethod
 
-StrPath = os.PathLike[str] | str
+StrOrBytesPathOrBufferedReader = (
+    os.PathLike[str] | os.PathLike[bytes] | str | bytes | io.BufferedReader
+)
 
 
 class Algorithm(ABC):
@@ -30,18 +33,22 @@ class Algorithm(ABC):
         """
         pass
 
-    def update_from_path(
-        self, path: StrPath, hash_function: str = 'sha256'
+    def update_from_file_hash(
+        self,
+        file: StrOrBytesPathOrBufferedReader,
+        hash_function: str = 'sha256',
     ) -> None:
         """
         Feeds a file digest into the algorithm.
 
         Args:
-            path: File path.
+            file: File path or readable stream.
             hash_function: Hash function.
         """
-        with open(path, 'rb') as f:
-            digest = hashlib.file_digest(f, hash_function).digest()
+        if not isinstance(file, io.BufferedReader):
+            file = open(file, 'rb')
+        with file:
+            digest = hashlib.file_digest(file, hash_function).digest()
             self.update(digest)
 
     def to_art(

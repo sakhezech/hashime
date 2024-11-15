@@ -148,7 +148,7 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
     if bottom_text is None:
         bottom_text = hash_function.upper()
 
-    algo = algorithm(digest=digest)
+    algo = algorithm(data=digest)
     art = algo.to_art(
         should_be_framed,
         top_text=top_text or None,

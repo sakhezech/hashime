@@ -11,7 +11,7 @@ class DrunkenBishop(Algorithm):
 
     def __init__(
         self,
-        digest: bytes | None = None,
+        data: bytes | None = None,
         width: int = 17,
         height: int = 9,
         chars: str = ' .o+=*BOX@%&#/^SE',
@@ -20,7 +20,7 @@ class DrunkenBishop(Algorithm):
         Initializes a Drunken Bishop.
 
         Args:
-            digest: Input bytes.
+            data: Input bytes.
             width: Width.
             height: Height.
             chars: Character set used to fill in the randomart.
@@ -33,7 +33,7 @@ class DrunkenBishop(Algorithm):
         self._matrix = [[0 for _ in range(width)] for _ in range(height)]
         self._x = width // 2
         self._y = height // 2
-        super().__init__(digest)
+        super().__init__(data)
 
     def __getitem__(self, key: tuple[int, int]) -> int:
         x, y = key

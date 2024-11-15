@@ -10,15 +10,15 @@ class Algorithm(ABC):
     Base class for algorithms.
     """
 
-    def __init__(self, digest: bytes | None = None) -> None:
+    def __init__(self, data: bytes | None = None) -> None:
         """
         Initializes an algorithm.
 
         Args:
-            digest: Input bytes.
+            data: Input bytes.
         """
-        if digest is not None:
-            self.update(digest)
+        if data is not None:
+            self.update(data)
 
     @abstractmethod
     def update(self, data: bytes) -> None:

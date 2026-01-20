@@ -7,7 +7,7 @@ dependencies = []
 dynamic = ['version']
 
 [project.optional-dependencies]
-dev = ['ruff', 'pytest']
+dev = ['ruff', 'pytest', 'faterunner']
 
 [project.urls]
 Homepage = 'https://github.com/sakhezech/hashime'
@@ -21,6 +21,11 @@ line-length = 79
 quote-style = 'single'
 [tool.ruff.lint]
 extend-select = ['I', 'E501']
+
+[tool.faterunner.targets]
+check = ['ruff check .', 'ruff format --check .']
+format = ['ruff check --fix .', 'ruff format .']
+test = ['pytest .']
 
 [tool.hatch.version]
 path = 'src/hashime/__version__.py'

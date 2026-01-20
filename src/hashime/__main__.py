@@ -1,10 +1,11 @@
 import argparse
 import base64
+import contextlib
 import hashlib
+import sys
 from collections.abc import Callable
-from io import BufferedReader, TextIOWrapper
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, TextIO
 
 from .__version__ import __version__
 from .algorithm import Algorithm
@@ -104,17 +105,17 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
     parser.add_argument(
         '-o',
         '--output',
-        type=argparse.FileType('w'),
-        default='-',
+        type=Path,
+        default=Path('-'),
         metavar='OUT',
         help='output file (defaults to stdout)',
     )
 
     parser.add_argument(
         'file',
-        type=argparse.FileType('br'),
-        default='-',
         nargs='?',
+        type=Path,
+        default=Path('-'),
         help='input file (defaults to stdin)',
     )
 
@@ -124,10 +125,14 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
     hash_function: str = args.hash_function
     should_be_framed: bool = not args.no_frame
     digest_form: str | None = args.digest
-    out: TextIOWrapper = args.output
-    file: BufferedReader = args.file
+    output_path: Path = args.output
+    input_path: Path = args.file
 
-    digest = hashlib.file_digest(file, hash_function).digest()
+    if input_path == Path('-'):
+        data = sys.stdin.read().encode()
+    else:
+        data = input_path.read_bytes()
+    digest = hashlib.new(hash_function, data).digest()
 
     frame_kwargs = {}
     if not args.no_frame:
@@ -144,7 +149,7 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
     bottom_text = args.bottom_text
 
     if top_text is None:
-        top_text = Path(file.name).name
+        top_text = input_path.name
     if bottom_text is None:
         bottom_text = hash_function.upper()
 
@@ -156,17 +161,32 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
         **frame_kwargs,
     )
 
-    out.write(art)
-    out.write('\n')
-    if digest_form:
-        encoded = _digest_choices[digest_form](digest)
-        out.write(f'{hash_function}: {encoded}\n')
+    redirect_context = (
+        redirect_stdout_and_close(output_path.open('w'))
+        if output_path != Path('-')
+        else contextlib.nullcontext()
+    )
+
+    with redirect_context:
+        sys.stdout.write(art)
+        sys.stdout.write('\n')
+        if digest_form:
+            encoded = _digest_choices[digest_form](digest)
+            sys.stdout.write(f'{hash_function}: {encoded}\n')
 
 
 class PrintAndExitAction(argparse.Action):
     def __call__(self, parser, *_):
         print(self.const)
         parser.exit()
+
+
+class redirect_stdout_and_close(contextlib.redirect_stdout):
+    _new_target: TextIO
+
+    def __exit__(self, exctype, excinst, exctb) -> None:
+        self._new_target.close()
+        return super().__exit__(exctype, excinst, exctb)
 
 
 if __name__ == '__main__':

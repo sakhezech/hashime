@@ -28,9 +28,13 @@ pip install git+https://github.com/sakhezech/hashime
 $ hashime -h
 usage: hashime [-h] [-v] [-l] [-a ALGO] [-H HASH] [--frame FRAME | --no-frame]
                [--top-text TOP_TEXT] [--bottom-text BOTTOM_TEXT]
-               [-d [DIGEST_FORM]] [-f FILE] [-o OUT]
+               [-d [DIGEST_FORM]] [-o OUT]
+               [file]
 
 hash visualization tool
+
+positional arguments:
+  file                  input file (defaults to stdin)
 
 options:
   -h, --help            show this help message and exit
@@ -41,20 +45,20 @@ options:
                         visualization algorithm (defaults to drunken_bishop)
   -H HASH, --hash-function HASH
                         hashing function (defaults to sha256)
-  --frame FRAME         comma-separated frame characters in order of (top_line,
-                        right_line, bottom_line, left_line, top_left_corner,
-                        top_right_corner, bottom_right_corner,
-                        bottom_left_corner, left_bracket, right_bracket)
+  --frame FRAME         comma-separated frame characters in order of
+                        (top_line, right_line, bottom_line, left_line,
+                        top_left_corner, top_right_corner,
+                        bottom_right_corner, bottom_left_corner, left_bracket,
+                        right_bracket)
   --no-frame            output visualization without a frame
   --top-text TOP_TEXT   text on the top frame line
   --bottom-text BOTTOM_TEXT
                         text on the bottom frame line
   -d [DIGEST_FORM], --digest [DIGEST_FORM]
                         show digest (defaults to base64)
-  -f FILE, --file FILE  input file (defaults to stdin)
   -o OUT, --output OUT  output file (defaults to stdout)
 
-$ hashime -H md5 -d -f LICENSE
+$ hashime -H md5 -d base64 LICENSE
 +----[LICENSE]----+
 |                 |
 |         .       |

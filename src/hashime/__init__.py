@@ -3,7 +3,7 @@ Hash visualization tool inspired by beautiful ssh-keygen randomart.
 
 Typical usage as CLI::
 
-    $ hashime -f LICENSE
+    $ hashime LICENSE
     +----[LICENSE]----+
     |    ..o +        |
     |   o E.= o       |

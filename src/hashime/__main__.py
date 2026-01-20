@@ -102,20 +102,20 @@ Digest Forms:\n    {', '.join(_digest_choices.keys())}""",
     )
 
     parser.add_argument(
-        '-f',
-        '--file',
-        type=argparse.FileType('br'),
-        default='-',
-        help='input file (defaults to stdin)',
-    )
-
-    parser.add_argument(
         '-o',
         '--output',
         type=argparse.FileType('w'),
         default='-',
         metavar='OUT',
         help='output file (defaults to stdout)',
+    )
+
+    parser.add_argument(
+        'file',
+        type=argparse.FileType('br'),
+        default='-',
+        nargs='?',
+        help='input file (defaults to stdin)',
     )
 
     args = parser.parse_args(argv)
